@@ -1,11 +1,42 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
+    <Title>Captcha</Title>
+    <Product>Captcha</Product>
+    <Version>0.1.0</Version>
+    <Company>ChatAIze</Company>
+    <Authors>Marcel Kwiatkowski</Authors>
+    <Copyright>© ChatAIze 2024</Copyright>
+    <AssemblyName>ChatAIze.Captcha</AssemblyName>
+    <RootNamespace>ChatAIze.Captcha</RootNamespace>
+    <PackageId>ChatAIze.Captcha</PackageId>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.chataize.com</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/chataize/captcha/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chataize/captcha</RepositoryUrl>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Description>C# .NET 8.0 Blazor server component for hCaptcha.</Description>
+    <PackageTags>
+      .net, app, blazor, bot, captcha, component, csharp, hcaptcha, interactive, lib, library, net,
+      protection, razor, server, spam, ui, verification, web
+    </PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <None
+        Include="icon.png"
+        Pack="true"
+        PackagePath="\" />
+    <None
+        Include="../README.md"
+        Pack="true"
+        PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference
