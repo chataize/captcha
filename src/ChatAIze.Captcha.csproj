@@ -42,5 +42,8 @@
     <PackageReference
         Include="Microsoft.AspNetCore.Components.Web"
         Version="8.0.10" />
+    <PackageReference
+        Include="Microsoft.Extensions.Http"
+        Version="8.0.1" />
   </ItemGroup>
 </Project>
