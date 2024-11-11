@@ -83,6 +83,13 @@
     [JSInvokable]
     public async Task OnCaptchaExpired()
     {
+        IsVerified = false;
+
+        if (IsVerifiedChanged.HasDelegate)
+        {
+            await IsVerifiedChanged.InvokeAsync(IsVerified);
+        }
+
         if (Expired.HasDelegate)
         {
             await Expired.InvokeAsync();
@@ -92,6 +99,13 @@
     [JSInvokable]
     public async Task OnCaptchaChallengeExpired()
     {
+        IsVerified = false;
+
+        if (IsVerifiedChanged.HasDelegate)
+        {
+            await IsVerifiedChanged.InvokeAsync(IsVerified);
+        }
+
         if (ChallengeExpired.HasDelegate)
         {
             await ChallengeExpired.InvokeAsync();
