@@ -1,1 +1,28 @@
-﻿
+﻿@inject CaptchaService CaptchaService
+
+<div id="@_id"></div>
+
+@code {
+    private int _id = Random.Shared.Next();
+
+    [Parameter]
+    public bool IsVerified { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVerifiedChanged { get; set; }
+
+    [JSInvokable]
+    public async Task OnCaptchaCompleted(string token)
+    {
+        IsVerified = await CaptchaService.VerifyTokenAsync(token);
+        await IsVerifiedChanged.InvokeAsync(IsVerified);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this));
+        }
+    }
+}
