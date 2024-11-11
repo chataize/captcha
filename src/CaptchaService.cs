@@ -10,6 +10,8 @@ public sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime, 
 {
     private readonly Lazy<Task<IJSObjectReference>> moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/ChatAIze.Captcha/captcha.js").AsTask());
 
+    internal string? IpAddress { get; set; }
+
     public async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference)
     {
         var module = await moduleTask.Value;
