@@ -1,8 +1,14 @@
+using ChatAIze.Captcha;
 using ChatAIze.Captcha.Preview.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddCaptcha(o =>
+{
+    o.SiteKey = builder.Configuration["Captcha:SiteKey"]!;
+    o.Secret = builder.Configuration["Captcha:Secret"]!;
+});
 
 var app = builder.Build();
 
