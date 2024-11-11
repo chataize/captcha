@@ -19,7 +19,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Description> Preview project for Captcha library.</Description>
+    <Description>Preview project for Captcha library.</Description>
     <PackageTags>
       .net, app, blazor, bot, captcha, component, csharp, demo, example, hcaptcha, interactive, lib,
       library, net, preview, protection, razor, server, showcase, spam, test, ui, verification, web
