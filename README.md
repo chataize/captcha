@@ -1,4 +1,4 @@
-# Captcha
+# CAPTCHA
 C# .NET 8.0 Blazor server component for [hCaptcha](https://www.hcaptcha.com).
 
 > [!WARNING]
