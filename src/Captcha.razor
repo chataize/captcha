@@ -25,7 +25,7 @@
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
     {
-        IsVerified = await CaptchaService.VerifyTokenAsync(token);
+        IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress);
         await IsVerifiedChanged.InvokeAsync(IsVerified);
     }
 

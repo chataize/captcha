@@ -18,16 +18,23 @@ public sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime, 
         await module.InvokeVoidAsync("initCaptcha", id, reference, options.Value.SiteKey);
     }
 
-    public async Task<bool> VerifyTokenAsync(string token)
+    public async Task<bool> VerifyTokenAsync(string token, string? ipAddress)
     {
-        var requestContent = new FormUrlEncodedContent(
-        [
-            new KeyValuePair<string, string>("secret", options.Value.Secret),
-            new KeyValuePair<string, string>("sitekey", options.Value.SiteKey),
-            new KeyValuePair<string, string>("response", token),
-        ]);
+        var values = new Dictionary<string, string>
+        {
+            ["secret"] = options.Value.Secret,
+            ["sitekey"] = options.Value.SiteKey,
+            ["response"] = token,
+        };
 
+        if (options.Value.VerifyIpAddresses && !string.IsNullOrWhiteSpace(ipAddress) && ipAddress != "::1")
+        {
+            values["remoteip"] = ipAddress;
+        }
+
+        var requestContent = new FormUrlEncodedContent(values);
         var response = await httpClient.PostAsync("https://hcaptcha.com/siteverify", requestContent);
+
         if (!response.IsSuccessStatusCode)
         {
             return false;
