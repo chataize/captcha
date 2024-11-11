@@ -7,6 +7,12 @@ public sealed class CaptchaMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context, CaptchaService captchaService, IOptions<CaptchaOptions> options)
     {
+        if (!options.Value.VerifyIpAddresses)
+        {
+            await next(context);
+            return;
+        }
+
         if (options.Value.IsConnectionProxied && context.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
         {
             captchaService.IpAddress = forwardedFor;
