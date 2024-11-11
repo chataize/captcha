@@ -1,8 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
+    <Title>Captcha Preview</Title>
+    <Product>Captcha</Product>
+    <Version>0.1.0</Version>
+    <Company>ChatAIze</Company>
+    <Authors>Marcel Kwiatkowski</Authors>
+    <Copyright>© ChatAIze 2024</Copyright>
+    <AssemblyName>ChatAIze.Captcha.Preview</AssemblyName>
+    <RootNamespace>ChatAIze.Captcha.Preview</RootNamespace>
+    <PackageId>ChatAIze.Captcha.Preview</PackageId>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.chataize.com</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/chataize/captcha/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chataize/captcha</RepositoryUrl>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Description> Preview project for Captcha library.</Description>
+    <PackageTags>
+      .net, app, blazor, bot, captcha, component, csharp, demo, example, hcaptcha, interactive, lib,
+      library, net, preview, protection, razor, server, showcase, spam, test, ui, verification, web
+    </PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference
