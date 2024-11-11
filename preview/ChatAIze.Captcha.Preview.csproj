@@ -24,6 +24,7 @@
       .net, app, blazor, bot, captcha, component, csharp, demo, example, hcaptcha, interactive, lib,
       library, net, preview, protection, razor, server, showcase, spam, test, ui, verification, web
     </PackageTags>
+    <UserSecretsId>3e6ac97e-200a-43b1-90d3-ab2b7a075e04</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None
