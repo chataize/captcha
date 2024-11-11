@@ -21,20 +21,20 @@ internal sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime
         }
     }
 
-    internal async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference, CaptchaTheme theme, CaptchaSize size)
+    internal async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference, string? siteKey, CaptchaTheme theme, CaptchaSize size)
     {
         var module = await moduleTask.Value;
-        await module.InvokeVoidAsync("initCaptcha", id, reference, options.Value.SiteKey, theme.ToString().ToLowerInvariant(), size.ToString().ToLowerInvariant());
+        await module.InvokeVoidAsync("initCaptcha", id, reference, siteKey ?? options.Value.SiteKey, theme.ToString().ToLowerInvariant(), size.ToString().ToLowerInvariant());
     }
 
-    internal async Task<bool> VerifyTokenAsync(string token, string? ipAddress)
+    internal async Task<bool> VerifyTokenAsync(string token, string? ipAddress, string? siteKey, string? secret)
     {
         try
         {
             var values = new Dictionary<string, string>
             {
-                ["secret"] = options.Value.Secret,
-                ["sitekey"] = options.Value.SiteKey,
+                ["secret"] = secret ?? options.Value.Secret,
+                ["sitekey"] = siteKey ?? options.Value.SiteKey,
                 ["response"] = token,
             };
 

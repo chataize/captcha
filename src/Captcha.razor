@@ -12,6 +12,12 @@
     private string? _ipAddress;
 
     [Parameter]
+    public string? SiteKey { get; set; }
+
+    [Parameter]
+    public string? Secret { get; set; }
+
+    [Parameter]
     public CaptchaTheme Theme { get; set; }
 
     [Parameter]
@@ -49,7 +55,7 @@
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
     {
-        IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress);
+        IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress, SiteKey, Secret);
 
         if (IsVerifiedChanged.HasDelegate)
         {
@@ -149,7 +155,7 @@
 
         if (firstRender)
         {
-            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), Theme, Size);
+            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), SiteKey, Theme, Size);
         }
     }
 
