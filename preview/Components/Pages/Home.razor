@@ -2,10 +2,61 @@
 
 <PageTitle>Home</PageTitle>
 
-<Captcha @bind-IsVerified="_isVerified" Theme="CaptchaTheme.Dark" Size="CaptchaSize.Compact" />
+<Captcha @bind-IsVerified="_isVerified" Theme="CaptchaTheme.Dark" Size="CaptchaSize.Compact" Opened="OnOpened" Closed="OnClosed" Succeeded="OnSucceeded" Expired="OnExpired" ChallengeExpired="OnChallengeExpired" Error="OnError" />
 
 <h1>Verified: @_isVerified</h1>
+<p>Opened: @_openedCount</p>
+<p>Closed: @_closedCount</p>
+<p>Succeeded: @_succeededCount</p>
+<p>Expired: @_expiredCount</p>
+<p>Challenge Expired: @_challengeExpiredCount</p>
+<p>Error: @_errorCount</p>
 
 @code {
     private bool _isVerified;
+
+    private int _openedCount;
+
+    private int _closedCount;
+
+    private int _succeededCount;
+
+    private int _expiredCount;
+
+    private int _challengeExpiredCount;
+
+    private int _errorCount;
+
+    private string? _errorCode;
+
+    private void OnOpened()
+    {
+        _openedCount++;
+    }
+
+    private void OnClosed()
+    {
+        _closedCount++;
+    }
+
+    private void OnSucceeded()
+    {
+        _succeededCount++;
+    }
+
+    private void OnExpired()
+    {
+        _expiredCount++;
+    }
+
+    private void OnChallengeExpired()
+    {
+        _challengeExpiredCount++;
+    }
+
+    private void OnError(string code)
+    {
+        _errorCount++;
+        _errorCode = code;
+    }
 }
