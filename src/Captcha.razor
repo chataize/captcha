@@ -12,13 +12,13 @@
     private string? _ipAddress;
 
     [Parameter]
-    public bool IsVerified { get; set; }
-
-    [Parameter]
     public CaptchaTheme Theme { get; set; }
 
     [Parameter]
     public CaptchaSize Size { get; set; }
+
+    [Parameter]
+    public bool IsVerified { get; set; }
 
     [Parameter]
     public EventCallback<bool> IsVerifiedChanged { get; set; }
