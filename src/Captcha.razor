@@ -17,6 +17,9 @@
     [Parameter]
     public EventCallback<bool> IsVerifiedChanged { get; set; }
 
+    [Parameter]
+    public CaptchaTheme Theme { get; set; }
+
     public void Dispose()
     {
         _persistingSubscription.Dispose();
@@ -50,7 +53,7 @@
 
         if (firstRender)
         {
-            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this));
+            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), Theme);
         }
     }
 
