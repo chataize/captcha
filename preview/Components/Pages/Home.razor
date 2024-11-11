@@ -2,7 +2,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<Captcha @bind-IsVerified="_isVerified" Theme="CaptchaTheme.Dark" Size="CaptchaSize.Compact" Opened="OnOpened" Closed="OnClosed" Succeeded="OnSucceeded" Expired="OnExpired" ChallengeExpired="OnChallengeExpired" Error="OnError" />
+<Captcha @bind-IsVerified="_isVerified" Size="CaptchaSize.Compact" Opened="OnOpened" Closed="OnClosed" Succeeded="OnSucceeded" Expired="OnExpired" ChallengeExpired="OnChallengeExpired" Error="OnError" />
 
 <h1>Verified: @_isVerified</h1>
 <p>Opened: @_openedCount</p>
