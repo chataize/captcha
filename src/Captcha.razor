@@ -20,6 +20,9 @@
     [Parameter]
     public CaptchaTheme Theme { get; set; }
 
+    [Parameter]
+    public CaptchaSize Size { get; set; }
+
     public void Dispose()
     {
         _persistingSubscription.Dispose();
@@ -53,7 +56,7 @@
 
         if (firstRender)
         {
-            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), Theme);
+            await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), Theme, Size);
         }
     }
 
