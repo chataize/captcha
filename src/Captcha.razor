@@ -1,15 +1,26 @@
-﻿@inject CaptchaService CaptchaService
+﻿@implements IDisposable
+@inject PersistentComponentState ApplicationState
+@inject CaptchaService CaptchaService
 
 <div id="@_id"></div>
 
 @code {
+    private PersistingComponentStateSubscription _persistingSubscription;
+
     private int _id = Random.Shared.Next();
+
+    private string? _ipAddress;
 
     [Parameter]
     public bool IsVerified { get; set; }
 
     [Parameter]
     public EventCallback<bool> IsVerifiedChanged { get; set; }
+
+    public void Dispose()
+    {
+        _persistingSubscription.Dispose();
+    }
 
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
@@ -18,11 +29,34 @@
         await IsVerifiedChanged.InvokeAsync(IsVerified);
     }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (ApplicationState.TryTakeFromJson<string>("ipAddress", out var ipAddress))
+        {
+            _ipAddress = ipAddress;
+        }
+        else
+        {
+            _ipAddress = CaptchaService.IpAddress;
+            _persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await base.OnAfterRenderAsync(firstRender);
+
         if (firstRender)
         {
             await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this));
         }
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson("ipAddress", CaptchaService.IpAddress);
+        return Task.CompletedTask;
     }
 }
