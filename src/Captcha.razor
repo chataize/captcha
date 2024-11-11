@@ -50,9 +50,13 @@
     public async Task OnCaptchaCompleted(string token)
     {
         IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress);
-        await IsVerifiedChanged.InvokeAsync(IsVerified);
 
-        if (IsVerified)
+        if (IsVerifiedChanged.HasDelegate)
+        {
+            await IsVerifiedChanged.InvokeAsync(IsVerified);
+        }
+
+        if (Succeeded.HasDelegate && IsVerified)
         {
             await Succeeded.InvokeAsync();
         }
@@ -61,31 +65,46 @@
     [JSInvokable]
     public async Task OnCaptchaOpened()
     {
-        await Opened.InvokeAsync();
+        if (Opened.HasDelegate)
+        {
+            await Opened.InvokeAsync();
+        }
     }
 
     [JSInvokable]
     public async Task OnCaptchaClosed()
     {
-        await Closed.InvokeAsync();
+        if (Closed.HasDelegate)
+        {
+            await Closed.InvokeAsync();
+        }
     }
 
     [JSInvokable]
     public async Task OnCaptchaExpired()
     {
-        await Expired.InvokeAsync();
+        if (Expired.HasDelegate)
+        {
+            await Expired.InvokeAsync();
+        }
     }
 
     [JSInvokable]
     public async Task OnCaptchaChallengeExpired()
     {
-        await ChallengeExpired.InvokeAsync();
+        if (ChallengeExpired.HasDelegate)
+        {
+            await ChallengeExpired.InvokeAsync();
+        }
     }
 
     [JSInvokable]
     public async Task OnCaptchaError(string code)
     {
-        await Error.InvokeAsync(code);
+        if (Error.HasDelegate)
+        {
+            await Error.InvokeAsync(code);
+        }
     }
 
     protected override void OnInitialized()
