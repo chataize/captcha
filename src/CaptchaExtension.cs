@@ -5,12 +5,15 @@ namespace ChatAIze.Captcha;
 
 public static class CaptchaExtension
 {
-    public static IServiceCollection AddCaptcha(this IServiceCollection services, Action<CaptchaOptions> configure)
+    public static IServiceCollection AddCaptcha(this IServiceCollection services, Action<CaptchaOptions>? configure = null)
     {
         services.AddHttpClient<CaptchaService>();
         services.AddScoped<CaptchaService>();
 
-        services.Configure(configure);
+        if (configure is not null)
+        {
+            services.Configure(configure);
+        }
 
         return services;
     }
