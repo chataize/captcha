@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace ChatAIze.Captcha;
 
-public sealed class CaptchaMiddleware(RequestDelegate next)
+internal sealed class CaptchaMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context, CaptchaService captchaService, IOptions<CaptchaOptions> options)
     {
