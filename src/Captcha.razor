@@ -115,6 +115,13 @@
     [JSInvokable]
     public async Task OnCaptchaError(string code)
     {
+        IsVerified = false;
+
+        if (IsVerifiedChanged.HasDelegate)
+        {
+            await IsVerifiedChanged.InvokeAsync(IsVerified);
+        }
+
         if (Error.HasDelegate)
         {
             await Error.InvokeAsync(code);
