@@ -13,7 +13,7 @@ public sealed record CaptchaOptions
         Secret = secret;
     }
 
-    public required string SiteKey { get; init; }
+    public required string SiteKey { get; set; }
 
-    public required string Secret { get; init; }
+    public required string Secret { get; set; }
 }
