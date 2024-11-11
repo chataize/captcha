@@ -15,13 +15,31 @@
     public bool IsVerified { get; set; }
 
     [Parameter]
-    public EventCallback<bool> IsVerifiedChanged { get; set; }
-
-    [Parameter]
     public CaptchaTheme Theme { get; set; }
 
     [Parameter]
     public CaptchaSize Size { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVerifiedChanged { get; set; }
+
+    [Parameter]
+    public EventCallback Opened { get; set; }
+
+    [Parameter]
+    public EventCallback Closed { get; set; }
+
+    [Parameter]
+    public EventCallback Succeeded { get; set; }
+
+    [Parameter]
+    public EventCallback Expired { get; set; }
+
+    [Parameter]
+    public EventCallback ChallengeExpired { get; set; }
+
+    [Parameter]
+    public EventCallback<string> Error { get; set; }
 
     public void Dispose()
     {
@@ -33,6 +51,41 @@
     {
         IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress);
         await IsVerifiedChanged.InvokeAsync(IsVerified);
+
+        if (IsVerified)
+        {
+            await Succeeded.InvokeAsync();
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnCaptchaOpened()
+    {
+        await Opened.InvokeAsync();
+    }
+
+    [JSInvokable]
+    public async Task OnCaptchaClosed()
+    {
+        await Closed.InvokeAsync();
+    }
+
+    [JSInvokable]
+    public async Task OnCaptchaExpired()
+    {
+        await Expired.InvokeAsync();
+    }
+
+    [JSInvokable]
+    public async Task OnCaptchaChallengeExpired()
+    {
+        await ChallengeExpired.InvokeAsync();
+    }
+
+    [JSInvokable]
+    public async Task OnCaptchaError(string code)
+    {
+        await Error.InvokeAsync(code);
     }
 
     protected override void OnInitialized()
