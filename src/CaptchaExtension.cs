@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatAIze.Captcha;
@@ -12,5 +13,10 @@ public static class CaptchaExtension
         services.Configure(configure);
 
         return services;
+    }
+
+    public static IApplicationBuilder UseCaptcha(this IApplicationBuilder app)
+    {
+        return app.UseMiddleware<CaptchaMiddleware>();
     }
 }
