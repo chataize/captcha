@@ -18,15 +18,3 @@ public sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime, 
         }
     }
 }
-
-public static class CaptchaServiceExtensions
-{
-    public static IServiceCollection AddCaptchaService(this IServiceCollection services, Action<CaptchaOptions> configureOptions)
-    {
-        services.AddHttpClient<CaptchaService>();
-        services.AddScoped<CaptchaService>();
-        services.Configure(configureOptions);
-
-        return services;
-    }
-}
