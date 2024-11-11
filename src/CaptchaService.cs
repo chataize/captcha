@@ -12,10 +12,10 @@ public sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime, 
 
     internal string? IpAddress { get; set; }
 
-    public async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference, CaptchaTheme theme)
+    public async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference, CaptchaTheme theme, CaptchaSize size)
     {
         var module = await moduleTask.Value;
-        await module.InvokeVoidAsync("initCaptcha", id, reference, options.Value.SiteKey, theme.ToString().ToLowerInvariant());
+        await module.InvokeVoidAsync("initCaptcha", id, reference, options.Value.SiteKey, theme.ToString().ToLowerInvariant(), size.ToString().ToLowerInvariant());
     }
 
     public async Task<bool> VerifyTokenAsync(string token, string? ipAddress)
