@@ -2,6 +2,11 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<Captcha @bind-IsVerified="_isVerified" />
 
-Welcome to your new app.
+<h1>Verified: @_isVerified</h1>
+
+
+@code {
+    private bool _isVerified;
+}
