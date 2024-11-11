@@ -29,29 +29,36 @@ internal sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime
 
     internal async Task<bool> VerifyTokenAsync(string token, string? ipAddress)
     {
-        var values = new Dictionary<string, string>
+        try
         {
-            ["secret"] = options.Value.Secret,
-            ["sitekey"] = options.Value.SiteKey,
-            ["response"] = token,
-        };
+            var values = new Dictionary<string, string>
+            {
+                ["secret"] = options.Value.Secret,
+                ["sitekey"] = options.Value.SiteKey,
+                ["response"] = token,
+            };
 
-        if (options.Value.VerifyIpAddresses && !string.IsNullOrWhiteSpace(ipAddress) && ipAddress != "::1")
-        {
-            values["remoteip"] = ipAddress;
+            if (options.Value.VerifyIpAddresses && !string.IsNullOrWhiteSpace(ipAddress) && ipAddress != "::1")
+            {
+                values["remoteip"] = ipAddress;
+            }
+
+            var requestContent = new FormUrlEncodedContent(values);
+            var response = await httpClient.PostAsync("https://hcaptcha.com/siteverify", requestContent);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            var responseContent = await response.Content.ReadAsStreamAsync();
+            var responseDocument = await JsonDocument.ParseAsync(responseContent);
+
+            return responseDocument.RootElement.GetProperty("success").GetBoolean();
         }
-
-        var requestContent = new FormUrlEncodedContent(values);
-        var response = await httpClient.PostAsync("https://hcaptcha.com/siteverify", requestContent);
-
-        if (!response.IsSuccessStatusCode)
+        catch
         {
             return false;
         }
-
-        var responseContent = await response.Content.ReadAsStreamAsync();
-        var responseDocument = await JsonDocument.ParseAsync(responseContent);
-
-        return responseDocument.RootElement.GetProperty("success").GetBoolean();
     }
 }
