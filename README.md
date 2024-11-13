@@ -1,5 +1,5 @@
 # CAPTCHA
-C# .NET 8.0 Blazor server component for [hCaptcha](https://www.hcaptcha.com).
+C# .NET 9.0 Blazor server component for [hCaptcha](https://www.hcaptcha.com).
 
 > [!WARNING]
 > This library is designed to be used in a Blazor server app with interactive rendering enabled. It does **NOT** support Blazor WebAssembly.
