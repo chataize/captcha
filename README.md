@@ -20,7 +20,7 @@ builder.Services.AddCaptcha(o =>
 {
     o.SiteKey = builder.Configuration["Captcha:SiteKey"]!;
     o.Secret = builder.Configuration["Captcha:Secret"]!;
-    o.VerifyIpAddresses = true; // optional, default is true
+    o.VerifyIpAddresses = false; // optional, default is false
     o.IsConnectionProxied = false; // optional, default is false
 });
 ```

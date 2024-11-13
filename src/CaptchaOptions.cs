@@ -7,7 +7,7 @@ public sealed record CaptchaOptions
     public CaptchaOptions() { }
 
     [SetsRequiredMembers]
-    public CaptchaOptions(string siteKey, string secret, bool verifyIpAddresses = true, bool isConnectionProxied = false)
+    public CaptchaOptions(string siteKey, string secret, bool verifyIpAddresses = false, bool isConnectionProxied = false)
     {
         SiteKey = siteKey;
         Secret = secret;
@@ -19,7 +19,7 @@ public sealed record CaptchaOptions
 
     public required string Secret { get; set; }
 
-    public bool VerifyIpAddresses { get; set; } = true;
+    public bool VerifyIpAddresses { get; set; }
 
     public bool IsConnectionProxied { get; set; }
 }
