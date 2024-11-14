@@ -93,6 +93,7 @@ app.UseCaptcha();
     private void OnChallengeExpired() { }
 
     private void OnError(string code) { }
+}
 ```
 ### Errors
 | Code                  | Description                                                                                  |
