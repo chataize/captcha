@@ -34,6 +34,6 @@
     <ProjectReference Include="../src/ChatAIze.Captcha.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ChatAIze.DopamineUI" Version="0.8.19" />
+    <PackageReference Include="ChatAIze.DopamineUI" Version="0.9.3" />
   </ItemGroup>
 </Project>
