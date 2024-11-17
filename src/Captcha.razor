@@ -12,6 +12,9 @@
     private string? _ipAddress;
 
     [Parameter]
+    public string? IpAddress { get; set; }
+
+    [Parameter]
     public string? SiteKey { get; set; }
 
     [Parameter]
@@ -55,7 +58,7 @@
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
     {
-        IsVerified = await CaptchaService.VerifyTokenAsync(token, _ipAddress, SiteKey, Secret);
+        IsVerified = await CaptchaService.VerifyTokenAsync(token, IpAddress ?? _ipAddress, SiteKey, Secret);
 
         if (IsVerifiedChanged.HasDelegate)
         {
