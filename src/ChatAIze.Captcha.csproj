@@ -19,6 +19,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <Description>C# .NET 9.0 Blazor server component for hCaptcha.</Description>
     <PackageTags>
       .net, app, blazor, bot, captcha, component, csharp, hcaptcha, interactive, lib, library, net,
