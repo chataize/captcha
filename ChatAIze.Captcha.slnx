@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="src/ChatAIze.Captcha.csproj" />
+  <Project Path="preview/ChatAIze.Captcha.Preview.csproj" />
+</Solution>
