@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <Title>Captcha Preview</Title>
-    <Product>Captcha</Product>
+    <Title>CAPTCHA Preview</Title>
+    <Product>CAPTCHA</Product>
     <Version>0.4.3</Version>
     <Company>ChatAIze</Company>
     <Authors>Marcel Kwiatkowski</Authors>

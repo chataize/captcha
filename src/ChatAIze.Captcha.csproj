@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-    <Title>Captcha</Title>
-    <Product>Captcha</Product>
+    <Title>CAPTCHA</Title>
+    <Product>CAPTCHA</Product>
     <Version>0.4.3</Version>
     <Company>ChatAIze</Company>
     <Authors>Marcel Kwiatkowski</Authors>
