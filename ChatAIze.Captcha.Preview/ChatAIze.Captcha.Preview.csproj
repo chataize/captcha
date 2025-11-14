@@ -35,7 +35,7 @@
     <None Include="../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../src/ChatAIze.Captcha.csproj" />
+    <ProjectReference Include="../ChatAIze.Captcha/ChatAIze.Captcha.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ChatAIze.DopamineUI" Version="0.10.3" />
