@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd ../src
+cd ../ChatAIze.Captcha
 dotnet publish
 dotnet pack
 
