@@ -1,4 +1,4 @@
 ﻿<Solution>
   <Project Path="ChatAIze.Captcha/ChatAIze.Captcha.csproj" />
-  <Project Path="preview/ChatAIze.Captcha.Preview.csproj" />
+  <Project Path="ChatAIze.Captcha.Preview/ChatAIze.Captcha.Preview.csproj" />
 </Solution>
