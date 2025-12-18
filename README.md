@@ -1,8 +1,15 @@
 # CAPTCHA
-C# .NET 9.0 Blazor server component for [hCaptcha](https://www.hcaptcha.com).
+C# .NET 9.0 Blazor Server component for [hCaptcha](https://www.hcaptcha.com).
 
 > [!WARNING]
-> This library is designed to be used in a Blazor server app with interactive rendering enabled. It does **NOT** support Blazor WebAssembly.
+> This library is designed for Blazor Server with interactive rendering enabled. It does **NOT** support Blazor WebAssembly.
+
+## Requirements
+- .NET 9.0
+- Blazor Server with interactive rendering (`@rendermode InteractiveServer`)
+- hCaptcha site key and secret
+- Client access to `https://js.hcaptcha.com/1/api.js`
+- Server access to `https://hcaptcha.com/siteverify`
 
 ## Installation
 ### NuGet Package
@@ -14,7 +21,9 @@ dotnet add package ChatAIze.Captcha
 ```powershell
 Install-Package ChatAIze.Captcha
 ```
-### Service (Program.cs)
+
+## Setup
+### Services (Program.cs)
 ```cs
 builder.Services.AddCaptcha(o =>
 {
@@ -24,14 +33,20 @@ builder.Services.AddCaptcha(o =>
     o.IsConnectionProxied = false; // optional, default is false
 });
 ```
+
 > [!NOTE]
-> If users are connecting to your app via a reverse proxy like [Cloudflare](https://www.cloudflare.com), `IsConnectionProxied` should be set to `true`.
-> In such a case, the `X-Forwarded-For` header will be used to determine the client's IP address.
+> If users connect through a reverse proxy (Cloudflare, Nginx, etc.), set `IsConnectionProxied = true`
+> and ensure your proxy is configured to send a trusted `X-Forwarded-For` header.
+
 ### Middleware (Program.cs)
 ```cs
 app.UseCaptcha();
 ```
-### Javascript (App.razor)
+
+> [!NOTE]
+> If you use `UseForwardedHeaders`, call it before `UseCaptcha()` so the IP is already resolved.
+
+### JavaScript (App.razor or index.html)
 ```html
 <head>
   <!-- ... -->
@@ -39,63 +54,113 @@ app.UseCaptcha();
   <!-- ... -->
 </head>
 ```
+
 ### Using (_Imports.razor)
 ```razor
 @using ChatAIze.Captcha
 ```
 
-## Usage
+## Usage Guide
+### Basic usage
 ```razor
+@rendermode InteractiveServer
+
 <Captcha @bind-IsVerified="_isVerified" />
-<h1>Verified: @_isVerified</h1>
+<p>Verified: @_isVerified</p>
 
 @code {
     private bool _isVerified;
 }
 ```
-> [!TIP]
-> Make sure that the component containing the CAPTCHA has **interactive rendering** enabled.
-> ```razor
-> @rendermode InteractiveServer
-> ```
-### Properties
-- **SiteKey**: Overrides service settings
-- **Secret**: Overrides service settings
+
+### Handling success and errors
 ```razor
-<Captcha @bind-IsVerified="_isVerified" SiteKey="" Secret="" />
-```
-- **Theme**: Auto - Light - Dark
-- **Size**: Normal - Compact
-```razor
-<Captcha @bind-IsVerified="_isVerified" Theme="CaptchaTheme.Auto" Size="CaptchaSize.Normal" />
-```
-### Events
-- **Opened**: Called when the user display of a challenge starts.
-- **Closed**: Called when the user dismisses a challenge.
-- **Succeeded**: Called when the user submits a successful response.
-- **Expired**: Called when the passcode response expires and the user must re-verify.
-- **ChallengeExpired**: Called when the user display of a challenge times out with no answer.
-- **Error**: Called when hCaptcha encounters an error and cannot continue.
-```razor
-<Captcha @bind-IsVerified="_isVerified" SiteKey="" Secret="" Theme="CaptchaTheme.Auto" Size="CaptchaSize.Normal" Opened="OnOpened" Closed="OnClosed" Succeeded="OnSucceeded" Expired="OnExpired" ChallengeExpired="OnChallengeExpired" Error="OnError" />
+<Captcha
+    @bind-IsVerified="_isVerified"
+    Succeeded="OnSucceeded"
+    Expired="OnExpired"
+    Error="OnError" />
 
 @code {
     private bool _isVerified;
 
-    private void OnOpened() { }
-
-    private void OnClosed() { }
-
     private void OnSucceeded() { }
-
     private void OnExpired() { }
-
-    private void OnChallengeExpired() { }
-
     private void OnError(string code) { }
 }
 ```
-### Errors
+
+### Per-component overrides
+```razor
+<Captcha
+    @bind-IsVerified="_isVerified"
+    SiteKey="YOUR_SITE_KEY"
+    Secret="YOUR_SECRET" />
+```
+
+### Theme and size
+```razor
+<Captcha
+    @bind-IsVerified="_isVerified"
+    Theme="CaptchaTheme.Auto"
+    Size="CaptchaSize.Normal" />
+```
+
+### IP verification (optional)
+```cs
+builder.Services.AddCaptcha(o =>
+{
+    o.SiteKey = "...";
+    o.Secret = "...";
+    o.VerifyIpAddresses = true;
+    o.IsConnectionProxied = true; // set to true if behind a proxy
+});
+```
+
+> [!WARNING]
+> Only enable IP verification if you understand the privacy implications and your proxy setup is trusted.
+
+## Options Reference
+`CaptchaOptions`
+- `SiteKey` (required): hCaptcha site key.
+- `Secret` (required): hCaptcha secret key.
+- `VerifyIpAddresses` (optional): Include client IPs in verification requests.
+- `IsConnectionProxied` (optional): Read IPs from `X-Forwarded-For` when behind a proxy.
+
+## Component Parameters
+`Captcha`
+- `IpAddress`: Optional IP override for verification.
+- `SiteKey`: Optional site key override.
+- `Secret`: Optional secret override.
+- `Theme`: `Auto`, `Light`, `Dark`.
+- `Size`: `Normal`, `Compact`.
+- `IsVerified`: Two-way bound verification state.
+- Events: `Opened`, `Closed`, `Succeeded`, `Expired`, `ChallengeExpired`, `Error`.
+
+## Best Practices
+- Gate sensitive actions on `IsVerified` and re-check before processing server actions.
+- Keep `Secret` on the server only; never expose it to client code.
+- Use `VerifyIpAddresses` only when required by your security policy.
+- If proxied, ensure `X-Forwarded-For` comes from a trusted source and is properly configured.
+- Handle `Expired` and `Error` to prompt users to retry.
+- Add rate limiting on endpoints that are protected by CAPTCHA to reduce abuse.
+
+## Warnings
+- Blazor WebAssembly is not supported.
+- JavaScript is required; the widget will not render without `api.js`.
+- Interactive rendering is required; static rendering alone is not enough.
+
+## Limitations
+- Blazor WebAssembly is not supported.
+- `X-Forwarded-For` is used as-is when proxied; if multiple IPs are present, configure your proxy to send a single, trusted client IP.
+
+## Troubleshooting
+- **Widget does not render**: Ensure `api.js` is included and the component uses interactive rendering.
+- **Always fails verification**: Check that `SiteKey` and `Secret` match your hCaptcha settings and that the server can reach `https://hcaptcha.com/siteverify`.
+- **script-error**: The hCaptcha JS SDK is blocked (corporate firewall, ad blocker, or CSP).
+- **Errors after proxying**: Confirm `X-Forwarded-For` is trustworthy and not being overwritten by untrusted clients.
+
+## Error Codes
 | Code                  | Description                                                                                  |
 |-----------------------|----------------------------------------------------------------------------------------------|
 | **rate-limited**      | User has sent too many requests                                                              |
