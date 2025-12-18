@@ -5,15 +5,29 @@ using Microsoft.JSInterop;
 
 namespace ChatAIze.Captcha;
 
+/// <summary>
+/// Provides JS interop initialization and server-side verification for hCaptcha.
+/// </summary>
+/// <param name="httpClient">HTTP client used to call the hCaptcha verification API.</param>
+/// <param name="jsRuntime">JS runtime used to load and invoke the widget module.</param>
+/// <param name="options">Configured captcha options.</param>
 [method: ActivatorUtilitiesConstructor]
 internal sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime, IOptions<CaptchaOptions> options) : IAsyncDisposable
 {
-    // Lazy-load the JS module so we only import it when a component actually renders.
+    /// <summary>
+    /// Lazy-load the JS module so we only import it when a component actually renders.
+    /// </summary>
     private readonly Lazy<Task<IJSObjectReference>> moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/ChatAIze.Captcha/captcha.js").AsTask());
 
-    // Captured per request by middleware; used when validating the token.
+    /// <summary>
+    /// Gets or sets the client IP captured per request by middleware.
+    /// </summary>
     internal string? IpAddress { get; set; }
 
+    /// <summary>
+    /// Disposes the JS module if it has been initialized.
+    /// </summary>
+    /// <returns>A task that completes after the module is disposed.</returns>
     public async ValueTask DisposeAsync()
     {
         if (moduleTask.IsValueCreated)
@@ -23,6 +37,15 @@ internal sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime
         }
     }
 
+    /// <summary>
+    /// Initializes the hCaptcha widget via JS interop.
+    /// </summary>
+    /// <param name="id">DOM element ID that hosts the widget.</param>
+    /// <param name="reference">.NET object reference for JS callbacks.</param>
+    /// <param name="siteKey">Optional site key override.</param>
+    /// <param name="theme">Widget theme selection.</param>
+    /// <param name="size">Widget size selection.</param>
+    /// <returns>A task that completes after the widget is initialized.</returns>
     internal async Task InitializeAsync(int id, DotNetObjectReference<Captcha> reference, string? siteKey, CaptchaTheme theme, CaptchaSize size)
     {
         var module = await moduleTask.Value;
@@ -30,6 +53,14 @@ internal sealed class CaptchaService(HttpClient httpClient, IJSRuntime jsRuntime
         await module.InvokeVoidAsync("initCaptcha", id, reference, siteKey ?? options.Value.SiteKey, theme.ToString().ToLowerInvariant(), size.ToString().ToLowerInvariant());
     }
 
+    /// <summary>
+    /// Verifies a client token with the hCaptcha API.
+    /// </summary>
+    /// <param name="token">Token returned by the widget.</param>
+    /// <param name="ipAddress">Optional client IP to pass through.</param>
+    /// <param name="siteKey">Optional site key override.</param>
+    /// <param name="secret">Optional secret override.</param>
+    /// <returns><c>true</c> when verification succeeds; otherwise <c>false</c>.</returns>
     internal async Task<bool> VerifyTokenAsync(string token, string? ipAddress, string? siteKey, string? secret)
     {
         try

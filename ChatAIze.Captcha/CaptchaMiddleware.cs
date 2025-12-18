@@ -3,8 +3,19 @@ using Microsoft.Extensions.Options;
 
 namespace ChatAIze.Captcha;
 
+/// <summary>
+/// Captures client IPs for hCaptcha verification when enabled.
+/// </summary>
+/// <param name="next">Next middleware in the pipeline.</param>
 internal sealed class CaptchaMiddleware(RequestDelegate next)
 {
+    /// <summary>
+    /// Executes the middleware and stores the client IP for later verification.
+    /// </summary>
+    /// <param name="context">Current HTTP context.</param>
+    /// <param name="captchaService">Captcha service that stores the IP.</param>
+    /// <param name="options">Captcha options that control IP capture.</param>
+    /// <returns>A task that completes after downstream middleware runs.</returns>
     public async Task InvokeAsync(HttpContext context, CaptchaService captchaService, IOptions<CaptchaOptions> options)
     {
         // Skip IP capture if verification does not require it.

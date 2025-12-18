@@ -5,58 +5,112 @@
 <div id="@_id"></div>
 
 @code {
+    /// <summary>
+    /// Subscription used to persist state during server-side prerendering.
+    /// </summary>
     private PersistingComponentStateSubscription _persistingSubscription;
 
-    // Unique ID to bind the DOM element to the JS widget instance.
+    /// <summary>
+    /// Unique ID to bind the DOM element to the JS widget instance.
+    /// </summary>
     private int _id = Random.Shared.Next();
 
+    /// <summary>
+    /// Cached IP address from prerendering to reuse after hydration.
+    /// </summary>
     private string? _ipAddress;
 
+    /// <summary>
+    /// Optional IP address override for verification requests.
+    /// </summary>
     [Parameter]
     public string? IpAddress { get; set; }
 
+    /// <summary>
+    /// Optional site key override for widget rendering.
+    /// </summary>
     [Parameter]
     public string? SiteKey { get; set; }
 
+    /// <summary>
+    /// Optional secret override for server-side verification.
+    /// </summary>
     [Parameter]
     public string? Secret { get; set; }
 
+    /// <summary>
+    /// Desired widget theme.
+    /// </summary>
     [Parameter]
     public CaptchaTheme Theme { get; set; }
 
+    /// <summary>
+    /// Desired widget size.
+    /// </summary>
     [Parameter]
     public CaptchaSize Size { get; set; }
 
+    /// <summary>
+    /// Gets or sets whether the most recent verification succeeded.
+    /// </summary>
     [Parameter]
     public bool IsVerified { get; set; }
 
+    /// <summary>
+    /// Two-way binding hook for <see cref="IsVerified"/>.
+    /// </summary>
     [Parameter]
-    // Two-way binding hook for IsVerified.
     public EventCallback<bool> IsVerifiedChanged { get; set; }
 
+    /// <summary>
+    /// Invoked when the widget opens.
+    /// </summary>
     [Parameter]
     public EventCallback Opened { get; set; }
 
+    /// <summary>
+    /// Invoked when the widget closes.
+    /// </summary>
     [Parameter]
     public EventCallback Closed { get; set; }
 
+    /// <summary>
+    /// Invoked when verification succeeds.
+    /// </summary>
     [Parameter]
     public EventCallback Succeeded { get; set; }
 
+    /// <summary>
+    /// Invoked when the widget expires.
+    /// </summary>
     [Parameter]
     public EventCallback Expired { get; set; }
 
+    /// <summary>
+    /// Invoked when the challenge expires.
+    /// </summary>
     [Parameter]
     public EventCallback ChallengeExpired { get; set; }
 
+    /// <summary>
+    /// Invoked when the widget reports an error.
+    /// </summary>
     [Parameter]
     public EventCallback<string> Error { get; set; }
 
+    /// <summary>
+    /// Disposes the persisting subscription when the component is removed.
+    /// </summary>
     public void Dispose()
     {
         _persistingSubscription.Dispose();
     }
 
+    /// <summary>
+    /// Handles completion callbacks from the widget.
+    /// </summary>
+    /// <param name="token">hCaptcha response token.</param>
+    /// <returns>A task that completes after verification and event callbacks.</returns>
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
     {
@@ -74,6 +128,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles widget open callbacks.
+    /// </summary>
+    /// <returns>A task that completes after invoking any listeners.</returns>
     [JSInvokable]
     public async Task OnCaptchaOpened()
     {
@@ -83,6 +141,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles widget close callbacks.
+    /// </summary>
+    /// <returns>A task that completes after invoking any listeners.</returns>
     [JSInvokable]
     public async Task OnCaptchaClosed()
     {
@@ -92,6 +154,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles widget expiration callbacks.
+    /// </summary>
+    /// <returns>A task that completes after state updates and callbacks.</returns>
     [JSInvokable]
     public async Task OnCaptchaExpired()
     {
@@ -109,6 +175,10 @@
         }
     }
 
+    /// <summary>
+    /// Handles challenge expiration callbacks.
+    /// </summary>
+    /// <returns>A task that completes after state updates and callbacks.</returns>
     [JSInvokable]
     public async Task OnCaptchaChallengeExpired()
     {
@@ -126,6 +196,11 @@
         }
     }
 
+    /// <summary>
+    /// Handles widget error callbacks.
+    /// </summary>
+    /// <param name="code">Error code returned by the widget.</param>
+    /// <returns>A task that completes after state updates and callbacks.</returns>
     [JSInvokable]
     public async Task OnCaptchaError(string code)
     {
@@ -143,6 +218,9 @@
         }
     }
 
+    /// <summary>
+    /// Initializes component state, capturing the IP during prerendering.
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -159,6 +237,11 @@
         }
     }
 
+    /// <summary>
+    /// Initializes the JS widget after the first render.
+    /// </summary>
+    /// <param name="firstRender">Whether this is the first render.</param>
+    /// <returns>A task that completes after initialization.</returns>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -170,6 +253,10 @@
         }
     }
 
+    /// <summary>
+    /// Persists the IP address during prerendering.
+    /// </summary>
+    /// <returns>A completed task.</returns>
     private Task PersistData()
     {
         // Store IP so it survives the prerender -> interactive transition.
