@@ -1,11 +1,11 @@
 # CAPTCHA
-C# .NET 9.0 Blazor Server component for [hCaptcha](https://www.hcaptcha.com).
+C# .NET 10.0 Blazor Server component for [hCaptcha](https://www.hcaptcha.com).
 
 > [!WARNING]
 > This library is designed for Blazor Server with interactive rendering enabled. It does **NOT** support Blazor WebAssembly.
 
 ## Requirements
-- .NET 9.0
+- .NET 10.0
 - Blazor Server with interactive rendering (`@rendermode InteractiveServer`)
 - hCaptcha site key and secret
 - Client access to `https://js.hcaptcha.com/1/api.js`
@@ -20,6 +20,29 @@ dotnet add package ChatAIze.Captcha
 #### Package Manager Console
 ```powershell
 Install-Package ChatAIze.Captcha
+```
+
+## Quickstart
+```text
+// Program.cs
+builder.Services.AddCaptcha(o =>
+{
+    o.SiteKey = builder.Configuration["Captcha:SiteKey"]!;
+    o.Secret = builder.Configuration["Captcha:Secret"]!;
+});
+
+app.UseCaptcha();
+
+// App.razor (or index.html)
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+// Any .razor component
+@rendermode InteractiveServer
+<Captcha @bind-IsVerified="_isVerified" />
+
+@code {
+    private bool _isVerified;
+}
 ```
 
 ## Setup
@@ -38,6 +61,21 @@ builder.Services.AddCaptcha(o =>
 > If users connect through a reverse proxy (Cloudflare, Nginx, etc.), set `IsConnectionProxied = true`
 > and ensure your proxy is configured to send a trusted `X-Forwarded-For` header.
 
+### Configuration (appsettings.json + environment variables)
+```json
+{
+  "Captcha": {
+    "SiteKey": "YOUR_SITE_KEY",
+    "Secret": "YOUR_SECRET"
+  }
+}
+```
+```bash
+# Prefer environment variables for secrets in production
+Captcha__SiteKey=YOUR_SITE_KEY
+Captcha__Secret=YOUR_SECRET
+```
+
 ### Middleware (Program.cs)
 ```cs
 app.UseCaptcha();
@@ -45,6 +83,11 @@ app.UseCaptcha();
 
 > [!NOTE]
 > If you use `UseForwardedHeaders`, call it before `UseCaptcha()` so the IP is already resolved.
+> ```cs
+> app.UseForwardedHeaders();
+> app.UseCaptcha();
+> ```
+> Docs: https://learn.microsoft.com/aspnet/core/host-and-deploy/proxy-load-balancer
 
 ### JavaScript (App.razor or index.html)
 ```html
@@ -120,6 +163,16 @@ builder.Services.AddCaptcha(o =>
 > [!WARNING]
 > Only enable IP verification if you understand the privacy implications and your proxy setup is trusted.
 
+## Security & Privacy
+- Never expose `Secret` to the client; it must stay server-side.
+- Treat IP verification as personal data processing where applicable.
+- If you use a proxy, ensure `X-Forwarded-For` is trusted and not spoofable.
+- Re-check `IsVerified` on the server before sensitive operations.
+
+## CSP / Network Allowlist
+- Ensure CSP allows `https://js.hcaptcha.com` and hCaptcha-related endpoints.
+- hCaptcha CSP guidance: https://docs.hcaptcha.com/configuration#content-security-policy-csp
+
 ## Options Reference
 `CaptchaOptions`
 - `SiteKey` (required): hCaptcha site key.
@@ -154,10 +207,10 @@ builder.Services.AddCaptcha(o =>
 - Blazor WebAssembly is not supported.
 - `X-Forwarded-For` is used as-is when proxied; if multiple IPs are present, configure your proxy to send a single, trusted client IP.
 
-## Troubleshooting
+## FAQ / Troubleshooting
 - **Widget does not render**: Ensure `api.js` is included and the component uses interactive rendering.
 - **Always fails verification**: Check that `SiteKey` and `Secret` match your hCaptcha settings and that the server can reach `https://hcaptcha.com/siteverify`.
-- **script-error**: The hCaptcha JS SDK is blocked (corporate firewall, ad blocker, or CSP).
+- **script-error / script blocked**: The hCaptcha JS SDK is blocked (corporate firewall, ad blocker, or CSP).
 - **Errors after proxying**: Confirm `X-Forwarded-For` is trustworthy and not being overwritten by untrusted clients.
 
 ## Error Codes
