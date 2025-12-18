@@ -7,6 +7,7 @@
 @code {
     private PersistingComponentStateSubscription _persistingSubscription;
 
+    // Unique ID to bind the DOM element to the JS widget instance.
     private int _id = Random.Shared.Next();
 
     private string? _ipAddress;
@@ -30,6 +31,7 @@
     public bool IsVerified { get; set; }
 
     [Parameter]
+    // Two-way binding hook for IsVerified.
     public EventCallback<bool> IsVerifiedChanged { get; set; }
 
     [Parameter]
@@ -58,6 +60,7 @@
     [JSInvokable]
     public async Task OnCaptchaCompleted(string token)
     {
+        // Validate the token server-side before reporting success.
         IsVerified = await CaptchaService.VerifyTokenAsync(token, IpAddress ?? _ipAddress, SiteKey, Secret);
 
         if (IsVerifiedChanged.HasDelegate)
@@ -92,6 +95,7 @@
     [JSInvokable]
     public async Task OnCaptchaExpired()
     {
+        // Expiration invalidates any prior success.
         IsVerified = false;
 
         if (IsVerifiedChanged.HasDelegate)
@@ -108,6 +112,7 @@
     [JSInvokable]
     public async Task OnCaptchaChallengeExpired()
     {
+        // Challenge expiration is distinct from widget expiration but still invalidates.
         IsVerified = false;
 
         if (IsVerifiedChanged.HasDelegate)
@@ -124,6 +129,7 @@
     [JSInvokable]
     public async Task OnCaptchaError(string code)
     {
+        // Errors must clear the verified state to avoid stale success.
         IsVerified = false;
 
         if (IsVerifiedChanged.HasDelegate)
@@ -141,6 +147,7 @@
     {
         base.OnInitialized();
 
+        // Capture IP during prerender and persist it so the interactive render can reuse it.
         if (ApplicationState.TryTakeFromJson<string>("ipAddress", out var ipAddress))
         {
             _ipAddress = ipAddress;
@@ -158,12 +165,14 @@
 
         if (firstRender)
         {
+            // Initialize the hCaptcha widget once the container div exists.
             await CaptchaService.InitializeAsync(_id, DotNetObjectReference.Create(this), SiteKey, Theme, Size);
         }
     }
 
     private Task PersistData()
     {
+        // Store IP so it survives the prerender -> interactive transition.
         ApplicationState.PersistAsJson("ipAddress", CaptchaService.IpAddress);
         return Task.CompletedTask;
     }
