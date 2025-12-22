@@ -228,3 +228,9 @@ builder.Services.AddCaptcha(o =>
 | **script-error**      | hCaptcha JS SDK could not be loaded. User may be behind a firewall blocking api.js.          |
 
 Source: https://docs.hcaptcha.com/configuration#error-codes
+
+## Links
+- GitHub: https://github.com/chataize/captcha
+- Chataize organization: https://github.com/chataize
+- Website: https://www.chataize.com
+
